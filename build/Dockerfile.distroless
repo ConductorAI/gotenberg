@@ -174,14 +174,9 @@ RUN \
 COPY build/fonts.conf /etc/fonts/conf.d/100-gotenberg.conf
 
 # ----------------------------------------------
-# Python copy stage
-# ----------------------------------------------
-FROM public.ecr.aws/j9h1x6x3/distroless-python:latest AS python-source
-
-# ----------------------------------------------
 # Final stage
 # ----------------------------------------------
-FROM gcr.io/distroless/cc-debian12:latest AS base
+FROM public.ecr.aws/j9h1x6x3/distroless-python:latest AS base
 
 # Set platform-specific CHIPSET_ARCH
 FROM base AS base-amd64
@@ -194,11 +189,6 @@ ARG CHIPSET_ARCH=aarch64-linux-gnu
 
 ARG TARGETARCH
 FROM base-${TARGETARCH}
-
-# Required for unoconverter
-COPY --from=python-source /usr/local/bin/python /usr/bin/python
-COPY --from=python-source /usr/local/bin/python /usr/bin/python3
-COPY --from=python-source /usr/local/bin/python /usr/bin/python3.11
 
 ENV PYTHONPATH="/usr/local/lib/python3.11/dist-packages:"
 
